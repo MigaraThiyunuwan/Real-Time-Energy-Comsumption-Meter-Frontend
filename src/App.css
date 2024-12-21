@@ -44,7 +44,7 @@
 
 .gauge {
   position: relative;
-  width: 350px;
+  width: 320px;
   height: 210px;
 }
 
@@ -63,7 +63,6 @@
 .gauge-progress1 {
   fill: none;
   stroke: #4ac3b5;
-  /* stroke: #c34a4a; */
   stroke-width: 10;
   stroke-linecap: round;
   stroke-dasharray: 0 180;
@@ -72,7 +71,6 @@
 
 .gauge-progress2{
   fill: none;
-  /* stroke: #4ac3b5; */
   stroke: #f7c640;
   stroke-width: 10;
   stroke-linecap: round;
@@ -82,7 +80,6 @@
 
 .gauge-progress3{
   fill: none;
-  /* stroke: #4ac3b5; */
   stroke: #f84932;
   stroke-width: 10;
   stroke-linecap: round;
@@ -112,4 +109,123 @@ h3 {
   margin-top: 10px;
   font-size: 14px;
   font-weight: bold;
+}
+
+
+
+@media  (max-width: 430px) and (min-width: 361px)  {
+
+  .dashboard{
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    background: #1e3a58;
+    width: 360px;
+    border-radius: 10px;
+    margin: 20px;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
+
+  .dashboard h1{
+    color: white;
+    font-family: Arial, sans-serif;
+    font-size: 20px;
+    font-weight: bold;
+  }
+
+  .gauge-chart {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: Arial, sans-serif;
+    color: white;
+    background: #1e3a58;
+    padding: 20px;
+    border-radius: 10px;
+    width: 300px;
+    height: 250px;
+  }
+
+  .data{
+    width: 100%;
+    margin-top: 20px;
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: space-evenly;
+    color: white;
+    text-align: center;
+  }
+  
+  .data p{
+    font-size: 24px;
+  }
+
+}
+
+@media (max-width: 360px) {
+
+  .dashboard{
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    background: #1e3a58;
+    width: 320px;
+    border-radius: 10px;
+    margin: 20px;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
+
+  .dashboard h1{
+    color: white;
+    font-family: Arial, sans-serif;
+  }
+
+  .gauge-chart {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: Arial, sans-serif;
+    color: white;
+    background: #1e3a58;
+    padding: 20px;
+    border-radius: 10px;
+    width: 100px;
+    height: 250px;
+  }
+
+  .gauge {
+    position: relative;
+    width: 300px;
+    height: 210px;
+  }
+  
+  .gauge-svg {
+    width: 100%;
+    height: 110%;
+    transform: rotate(0deg);
+  }
+  
+  .gauge-bg {
+    fill: none;
+    stroke: #3e536c;
+    stroke-width: 10;
+  }
+
+  .data{
+    width: 100%;
+    margin-top: 20px;
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: space-evenly;
+    color: white;
+    text-align: center;
+  }
+  
+  .data p{
+    font-size: 18px;
+  }
 }
