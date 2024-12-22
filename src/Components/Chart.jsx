@@ -30,7 +30,7 @@ const Chart = ({ value, min, max }) => {
                 </svg>
                 <div className="gauge-value">
                     <span>{value.toFixed(2)}</span>
-                    <p>Watts</p>
+                    <p>W</p>
                 </div>
                 </div>
                 <h3>POWER CONSUMPTION</h3>

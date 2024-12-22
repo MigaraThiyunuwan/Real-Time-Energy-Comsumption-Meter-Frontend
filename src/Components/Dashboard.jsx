@@ -1,12 +1,43 @@
 import React, { useEffect, useState } from "react";
 import Chart from "./Chart";
 import HourBarChart from "./HourBarChart";
-import HourPieChart from "./HourPieChart";
+import DayLineChart from "./DayLineChart";
+import a from "../images/a.png";
+import v from "../images/v.png";
+import w from "../images/w.png";
 
 function Dashboard() {
     const [data, setData] = useState({ voltage: 0, current: 0, power: 0 });
     const [hourData, setHourData] = useState({ h0: 0, h1: 0, h2: 0 , h3: 0, h4: 0, h5: 0, h6: 0, h7: 0, h8: 0, h9: 0, h10: 0, h11: 0, h12: 0, h13: 0, h14: 0, h15: 0, h16: 0, h17: 0, h18: 0, h19: 0, h20: 0, h21: 0, h22: 0, h23: 0 });
     const [newHourData, setNewHourdata] = useState([]);
+    const [dayData , setDayData] = useState([]);
+    const [today, setToday] = useState("");
+    const [currentTime, setCurrentTime] = useState("");
+    const [dailyUsage, setDailyUsage] = useState(0);
+
+    const updateToday = () => {
+        const currentDate = new Date();
+        const formattedDate = currentDate.toISOString().split("T")[0]; // Format as YYYY-MM-DD
+        setToday(formattedDate);
+      };
+    
+      useEffect(() => {
+        updateToday(); // Set today when the component mounts
+      }, []);
+
+      const updateTime = () => {
+        const now = new Date();
+        const formattedTime = now.toLocaleTimeString(); // Format time as HH:MM:SS
+        setCurrentTime(formattedTime);
+      };
+    
+      useEffect(() => {
+        updateTime(); // Set initial time
+        const interval = setInterval(updateTime, 1000); // Update every second
+        return () => clearInterval(interval); // Cleanup interval on unmount
+      }, []);
+
+
     const [chartData, setChartData] = useState({
         labels: [],
         datasets: [{
@@ -16,7 +47,18 @@ function Dashboard() {
           borderColor: "rgba(75, 192, 192, 1)",
           borderWidth: 1
         }]
-      });
+    });
+
+    const [dayChartData, setDayChartData] = useState({
+        labels: [],
+        datasets: [{
+          label: "",
+          data: [],
+          backgroundColor: "rgba(75, 192, 192, 0.2)",
+          borderColor: "rgba(75, 192, 192, 1)",
+          borderWidth: 1
+        }]
+    });
     
     useEffect(() => {
         // Fetch data when the component mounts
@@ -25,6 +67,25 @@ function Dashboard() {
             const response = await fetch('http://192.168.8.204:8080/api/energy/gethourdata'); //localhost:8080
             const data = await response.json();
             setNewHourdata(data);  // Store the fetched data in the state
+
+            // Calculate the sum of energy
+            const totalEnergy = data.reduce((sum, item) => sum + item.energy, 0);
+            setDailyUsage(totalEnergy);  // Update the dailyUsage state with the sum
+          } catch (error) {
+            console.error('Error fetching data:', error);
+          }
+        };
+    
+        fetchData();
+      }, []);
+
+      useEffect(() => {
+        // Fetch data when the component mounts
+        const fetchData = async () => {
+          try {
+            const response = await fetch('http://192.168.8.204:8080/api/energy/getdaydata'); //localhost:8080
+            const data = await response.json();
+            setDayData(data);  // Store the fetched data in the state
           } catch (error) {
             console.error('Error fetching data:', error);
           }
@@ -55,6 +116,8 @@ function Dashboard() {
                 const newData = JSON.parse(cleanMessage); // Parse JSON
                 console.log("Parsed Data: ", newData);
                 setData(newData); // Update the state
+                
+                setDailyUsage((prevDailyUsage) => prevDailyUsage + newData.power); // Update daily usage
             } catch (error) {
                 console.error("Error parsing JSON: ", error);
             }
@@ -76,41 +139,6 @@ function Dashboard() {
             return () => socket.close();
     }, []);
 
-    //////////////////////////////////////// this is for testing purpose only ////////////////////////////////////////////
-    function generateRandomData() {
-        const voltage = Math.floor(Math.random() * (240 - 100 + 1)) + 100;  // Voltage between 100 and 240
-        const current = (Math.random() * (9 - 0.1) + 0.1).toFixed(2);  // Current between 0.1 and 9, rounded to 2 decimal places
-
-        return {
-            voltage: voltage,
-            current: current
-        };
-    }
-
-     // Sending a POST request with random data every 2 seconds (for testing)
-     useEffect(() => {
-        const intervalId = setInterval(() => {
-            const randomData = generateRandomData();
-            console.log('Sending API request with random data:', randomData);
-            fetch('http://localhost:8080/api/energy/simulate', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(randomData),
-            })
-            .then(response => response.json())
-            .then(responseData => {
-                console.log('API Response:', responseData);
-            })
-            .catch((error) => {
-                console.error('Error:', error);
-            });
-        }, 1000000); //1000
-
-        return () => clearInterval(intervalId);
-    }, []); 
-
    // Update chart data when newHourData changes
   useEffect(() => {
     // Extract hour and energy values from the fetched data
@@ -128,6 +156,24 @@ function Dashboard() {
       }]
     });
   }, [newHourData]);
+
+  // Update day chart data when newHourData changes
+  useEffect(() => {
+    // Extract hour and energy values from the fetched data
+    const days = dayData.map(item => item.date);
+    const energies = dayData.map(item => item.energy);
+
+    setDayChartData({
+      labels: days,  // Hours as labels
+      datasets: [{
+        label: "",
+        data: energies,  // Hourly power consumption data
+        backgroundColor: ["#4A628A", "#7AB2D3"],
+        borderColor: "rgba(75, 192, 192, 1)",
+        borderWidth: 1
+      }]
+    });
+  }, [dayData]);
     
   return (
     // className="container"
@@ -136,22 +182,72 @@ function Dashboard() {
             <h1>Real Time Power Consumption</h1>
 
             <Chart value={data.power} min={0} max={1500} />
-            <div className="data">
+            {/* <div className="data">
                 <p>Voltage: {data.voltage.toFixed(2)} V</p>
                 <p>Current: {data.current.toFixed(2)} A</p>
                 <p>Power: {data.power.toFixed(2)} W</p>
-                {/* <p>Hour16: {hourData.h16.toFixed(2)} Wh</p>
-                <p>Hour17: {hourData.h17.toFixed(2)} Wh</p> */}
-            </div>
+            </div> */}
                 
+        </div>
+        <div className="data-container">
+            <div className="date-row">
+                <div className="date">
+                    <h1>Date:</h1>
+                    <p>{today}</p>
+                </div>
+                <div className="date">
+                    <h1>Time:</h1>
+                    <p>{currentTime}</p>
+                </div>
+                <div className="date">
+                    <h1>Daily Usage:</h1>
+                    <p>{dailyUsage.toFixed(2)} W</p>
+                </div>
+                    
+            </div>
+            <div className="data-cards">
+                <div className="data-card">
+                    <div className="data-card-img">
+                        <img src={a} alt="A" />
+                    </div>
+                    <div className="data-card-content">
+                        <h1>Current:</h1>
+                        <p>{data.current.toFixed(2)} A</p>
+                    </div>
+                    
+                </div>
+                <div className="data-card">
+                    <div className="data-card-img">
+                        <img src={v} alt="V" />
+                    </div>
+                    <div className="data-card-content">
+                        <h1>Voltage:</h1>
+                        <p>{data.voltage.toFixed(2)} V</p>
+                    </div>
+                    
+                </div>
+                <div className="data-card">
+                    <div className="data-card-img">
+                        <img src={w} alt="W "/>
+                    </div>
+                    <div className="data-card-content">
+                        <h1>Power:</h1>
+                        <p>{data.power.toFixed(2)} W</p>
+                    </div>
+                    
+                </div>
+
+            </div>
+
         </div>
         <div className="hourly-consumption-bar">
             <h1>Hourly Energy Consumption in kWh for Today</h1>
             <HourBarChart chartData={chartData} />
         </div>
-        {/* <div className="hourly-consumption-pie">
-            <HourPieChart chartData={chartData} />
-        </div> */}
+        <div className="hourly-consumption-bar">
+        <h1>Daily Energy Consumption in kWh for this Month</h1>
+            <DayLineChart chartData={dayChartData} />
+        </div>
         
         
     </div>
