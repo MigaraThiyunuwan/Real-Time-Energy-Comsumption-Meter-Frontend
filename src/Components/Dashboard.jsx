@@ -5,6 +5,8 @@ import DayLineChart from "./DayLineChart";
 import a from "../images/a.png";
 import v from "../images/v.png";
 import w from "../images/w.png";
+import HourDataTable from "./HourDataTable";
+import DayDataTable from "./DayDataTable";
 
 function Dashboard() {
     const [data, setData] = useState({ voltage: 0, current: 0, power: 0 });
@@ -181,12 +183,13 @@ function Dashboard() {
         <div className="dashboard">
             <h1>Real Time Power Consumption</h1>
 
-            <Chart value={data.power} min={0} max={1500} />
-            {/* <div className="data">
-                <p>Voltage: {data.voltage.toFixed(2)} V</p>
-                <p>Current: {data.current.toFixed(2)} A</p>
-                <p>Power: {data.power.toFixed(2)} W</p>
-            </div> */}
+          <div className="chart-container">
+            <Chart value={data.current} min={0} max={20} icon='A' name='CURRENT CONSUMPTION'/>
+            <Chart value={data.voltage} min={0} max={300} icon='V' name='VOLTAGE CONSUMPTION'/>
+            <Chart value={data.power} min={0} max={1500} icon='W' name='POWER CONSUMPTION'/>
+          </div>
+            
+
                 
         </div>
         <div className="data-container">
@@ -245,9 +248,18 @@ function Dashboard() {
             <HourBarChart chartData={chartData} />
         </div>
         <div className="hourly-consumption-bar">
-        <h1>Daily Energy Consumption in kWh for this Month</h1>
+            <h1>Daily Energy Consumption in kWh for this Month</h1>
             <DayLineChart chartData={dayChartData} />
         </div>
+
+        <div>
+          <HourDataTable tableData={newHourData}/>
+        </div>
+        <div>
+          <DayDataTable tableData={dayData}/>
+        </div>
+
+        
         
         
     </div>

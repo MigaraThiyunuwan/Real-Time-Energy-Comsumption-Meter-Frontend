@@ -1,6 +1,6 @@
 import React from "react";
 
-const Chart = ({ value, min, max }) => {
+const Chart = ({ value, min, max, icon, name }) => {
     // Normalize the value to fit within 0-180 degrees
     const normalizedValue = Math.min(Math.max(value, min), max); // Clamp the value between min and max
     const rotation = ((normalizedValue - min) / (max - min)) * 125; // Scale value to degrees
@@ -30,10 +30,10 @@ const Chart = ({ value, min, max }) => {
                 </svg>
                 <div className="gauge-value">
                     <span>{value.toFixed(2)}</span>
-                    <p>W</p>
+                    <p>{icon}</p>
                 </div>
                 </div>
-                <h3>POWER CONSUMPTION</h3>
+                <h3>{name}</h3>
             </div>
 
     );
