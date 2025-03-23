@@ -184,9 +184,9 @@ function Dashboard() {
             <h1>Real Time Power Consumption</h1>
 
           <div className="chart-container">
-            <Chart value={data.current} min={0} max={20} icon='A' name='CURRENT CONSUMPTION'/>
+            <Chart value={data.current} min={0} max={150} icon='mA' name='CURRENT CONSUMPTION'/>
             <Chart value={data.voltage} min={0} max={300} icon='V' name='VOLTAGE CONSUMPTION'/>
-            <Chart value={data.power} min={0} max={1500} icon='W' name='POWER CONSUMPTION'/>
+            <Chart value={data.power} min={0} max={100} icon='W' name='POWER CONSUMPTION'/>
           </div>
             
 
