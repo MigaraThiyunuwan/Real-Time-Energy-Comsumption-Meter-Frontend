@@ -25,7 +25,7 @@ function HourBarChart({chartData}) {
         y: {
             title: {
                 display: true, // Show the label on the y-axis
-                text: 'Power Consumption (Kilo Watts)', // Label text for the y-axis
+                text: 'Power Consumption (Watts)', // Label text for the y-axis
                 font: {
                   weight: 'bold', // Make the label bold
                   size: 16, // Set font size (optional)

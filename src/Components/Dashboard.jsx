@@ -64,9 +64,9 @@ function Dashboard() {
     
     useEffect(() => {
         // Fetch data when the component mounts
-        const fetchData = async () => {
+        const fetchData = async () => {   
           try {
-            const response = await fetch('http://192.168.8.204:8080/api/energy/gethourdata'); //localhost:8080
+            const response = await fetch('http://192.168.180.69:8080/api/energy/gethourdata'); //localhost:8080
             const data = await response.json();
             setNewHourdata(data);  // Store the fetched data in the state
 
@@ -85,7 +85,7 @@ function Dashboard() {
         // Fetch data when the component mounts
         const fetchData = async () => {
           try {
-            const response = await fetch('http://192.168.8.204:8080/api/energy/getdaydata'); //localhost:8080
+            const response = await fetch('http://192.168.180.69:8080/api/energy/getdaydata'); //localhost:8080
             const data = await response.json();
             setDayData(data);  // Store the fetched data in the state
           } catch (error) {
@@ -105,7 +105,7 @@ function Dashboard() {
             }
             return message.trim();
           };
-        const socket = new WebSocket("ws://192.168.8.204:8080/energy");  
+        const socket = new WebSocket("ws://192.168.180.69:8080/energy");  
         // ws://localhost:8080/energy
 
         socket.onmessage = (event) => {
@@ -244,7 +244,7 @@ function Dashboard() {
 
         </div>
         <div className="hourly-consumption-bar">
-            <h1>Hourly Energy Consumption in kWh for Today</h1>
+            <h1>Hourly Energy Consumption in Wh for Today</h1>
             <HourBarChart chartData={chartData} />
         </div>
         <div className="hourly-consumption-bar">
